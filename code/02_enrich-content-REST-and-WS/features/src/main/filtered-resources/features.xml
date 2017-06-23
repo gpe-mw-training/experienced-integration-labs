@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="usecases" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+    <feature name="usecase-camel-aggregation-db" version="1.0">
+        <feature version="[2.12,3)">camel</feature>
+        <feature version="[2.12,3)">camel-bindy</feature>
+        <feature version="[2.12,3)">camel-jackson</feature>
+        <feature version="[2.12,3)">camel-dozer</feature>
+        <feature version="[2.12,3)">camel-cxf</feature>
+        <feature version="[2.12,3)">camel-sql</feature>
+        <feature>h2</feature>
+        <bundle>mvn:org.fuse.usecase2/routing/${project.version}</bundle>
+    </feature>
+
+    <feature name="h2" version="1.4.190">
+        <bundle>mvn:com.h2database/h2/1.4.190</bundle>
+    </feature>
+</features>

@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>project</artifactId>
+        <groupId>org.fuse.usecase4</groupId>
+        <version>1.0</version>
+    </parent>
+
+    <groupId>org.fuse.usecase4</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0</version>
+    <name>Fuse :: Use Case 4 :: Parent</name>
+    <packaging>pom</packaging>
+
+    <properties>
+        <!-- Version of JBoss Fuse used for the use case -->
+        <jboss.fuse.bom.version>6.2.1.redhat-084</jboss.fuse.bom.version>
+
+        <!-- Versions should be the same as defined within the Fuse BOM -->
+        <camel.version>2.15.1.redhat-621084</camel.version>
+        <activemq.version>5.11.0.redhat-621084</activemq.version>
+        <spring-security.version>3.2.9.RELEASE</spring-security.version>
+        <apache-ds.version>2.0.0-M6</apache-ds.version>
+        <apache-ds-shared.version>1.0.0-M11</apache-ds-shared.version>
+        <apache-ds-jdbm.version>2.0.0-M1</apache-ds-jdbm.version>
+
+        <!-- Apache Maven plugins -->
+        <build-helper-maven-plugin.version>1.9.1</build-helper-maven-plugin.version>
+        <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+        <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+        <maven-install-plugin.version>2.3.1</maven-install-plugin.version>
+        <maven-surefire.version>2.19.1</maven-surefire.version>
+        <felix-maven-plugin.version>2.3.7</felix-maven-plugin.version>
+        <fabric8-plugin.version>1.2.0.redhat-621084</fabric8-plugin.version>
+
+        <!-- OSGI Properties required for the Apache Felix Plugin -->
+        <osgi-import-package>*</osgi-import-package>
+        <osgi-export-package/>
+        <osgi-private-package/>
+        <osgi-dynamic-package/>
+        <osgi-require-bundle/>
+        <osgi-embed-dep/>
+        <osgi-embed-transitive/>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.fuse.bom</groupId>
+                <artifactId>jboss-fuse-parent</artifactId>
+                <version>${jboss.fuse.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-parent</artifactId>
+                <version>${camel.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Not defined within the BOM -->
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-jaas</artifactId>
+                <version>${activemq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-ldap</artifactId>
+                <version>${spring-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${spring-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-all</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-core</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-core-avl</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-i18n</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-core-api</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-core-annotations</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-core-entry</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-test-framework</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-server-integ</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-server-annotations</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-core-integ</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-protocol-ldap</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-protocol-shared</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-server-jndi</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-interceptors-changelog</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-interceptors-journal</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-ldif-partition</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-xdbm-partition</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-jdbm-partition</artifactId>
+                <version>${apache-ds.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.directory.shared</groupId>
+                <artifactId>shared-asn1-api</artifactId>
+                <version>${apache-ds-shared.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.shared</groupId>
+                <artifactId>shared-asn1-ber</artifactId>
+                <version>${apache-ds-shared.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.shared</groupId>
+                <artifactId>shared-i18n</artifactId>
+                <version>${apache-ds-shared.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.shared</groupId>
+                <artifactId>shared-ldap</artifactId>
+                <version>${apache-ds-shared.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.shared</groupId>
+                <artifactId>shared-ldap-codec-core</artifactId>
+                <version>${apache-ds-shared.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.shared</groupId>
+                <artifactId>shared-ldap-extras-aci</artifactId>
+                <version>${apache-ds-shared.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.shared</groupId>
+                <artifactId>shared-ldap-codec-standalone</artifactId>
+                <version>${apache-ds-shared.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.shared</groupId>
+                <artifactId>shared-ldap-schema-data</artifactId>
+                <version>${apache-ds-shared.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.shared</groupId>
+                <artifactId>shared-ldap-model</artifactId>
+                <version>${apache-ds-shared.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.shared</groupId>
+                <artifactId>shared-util</artifactId>
+                <version>${apache-ds-shared.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.jdbm</groupId>
+                <artifactId>apacheds-jdbm2</artifactId>
+                <version>${apache-ds-jdbm.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Camel -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring</artifactId>
+        </dependency>
+        <!-- logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-maven-plugin</artifactId>
+                    <version>${camel.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${felix-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>fabric8-maven-plugin</artifactId>
+                    <version>${fabric8-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${felix-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Import-Package>${osgi-import-package}</Import-Package>
+                        <Private-Package>${osgi-private-package}</Private-Package>
+                        <Export-Package>${osgi-export-package}</Export-Package>
+                        <DynamicImport-Package>${osgi-dynamic-package}</DynamicImport-Package>
+                        <Require-Bundle>${osgi-require-bundle}</Require-Bundle>
+                        <Embed-Dependency>${osgi-embed-dep}</Embed-Dependency>
+                        <Embed-Transitive>${osgi-embed-transitive}</Embed-Transitive>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>fusesource-public-repository</id>
+            <name>FuseSource Release Repository</name>
+            <url>http://repository.jboss.org/nexus/content/repositories/fs-public/</url>
+        </repository>
+        <repository>
+            <id>jboss-public-repository</id>
+            <name>JBoss.org Public Maven Repository Group</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+        </repository>
+        <repository>
+            <id>jboss-fuse-ea</id>
+            <url>http://repository.jboss.org/nexus/content/groups/ea</url>
+        </repository>
+        <repository>
+            <id>jboss-releases</id>
+            <name>JBoss.org Fuse Releases</name>
+            <url>http://repository.jboss.org/nexus/content/repositories/fs-releases/</url>
+        </repository>
+        <repository>
+            <id>Maven Central</id>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>Tech Preview</id>
+            <url>http://maven.repository.redhat.com/techpreview/all</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>fusesource-public-repository</id>
+            <name>FuseSource Release Repository</name>
+            <url>http://repository.jboss.org/nexus/content/repositories/fs-public/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss.org Public Maven Repository Group</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>jboss-fuse-releases</id>
+            <name>JBoss.org Fuse Releases</name>
+            <url>http://repository.jboss.org/nexus/content/repositories/fs-releases</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>jboss-fuse-ea</id>
+            <url>http://repository.jboss.org/nexus/content/groups/ea</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>Tech Preview</id>
+            <url>http://maven.repository.redhat.com/techpreview/all</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+
+</project>

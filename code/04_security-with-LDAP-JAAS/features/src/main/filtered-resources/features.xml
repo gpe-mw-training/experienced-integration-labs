@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="usecases" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+  <feature name="usecase-secure-jms" version="1.0">
+    <feature version="[2.12,3)">camel</feature>
+    <feature version="[2.12,3)">camel-bindy</feature>
+    <feature version="[2.12,3)">camel-jackson</feature>
+    <feature version="[2.12,3)">camel-dozer</feature>
+    <feature version="[2.12,3)">camel-sql</feature>
+    <feature>activemq-camel</feature>
+    <feature>h2</feature>
+    <feature>jaas-ldap</feature>
+    <feature>amq-config</feature>
+    <bundle>mvn:org.fuse.usecase4/routing/${project.version}</bundle>
+  </feature>
+
+  <feature name="h2" version="1.4.190">
+    <bundle>mvn:com.h2database/h2/1.4.190</bundle>
+  </feature>
+
+  <feature name="jaas-ldap" version="${project.version}">
+    <bundle>mvn:org.fuse.usecase4/ldap/${project.version}</bundle>
+  </feature>
+
+  <feature name="amq-config" version="${project.version}">
+    <configfile finalname="etc/activemq.xml">mvn:org.fuse.usecase4/features/1.0/xml/amq-broker</configfile>
+  </feature>
+
+
+</features>

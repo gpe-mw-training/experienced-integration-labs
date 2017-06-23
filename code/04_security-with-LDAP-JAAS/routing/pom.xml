@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>org.fuse.usecase4</groupId>
+        <version>1.0</version>
+        <relativePath>../parent/pom.xml</relativePath>
+    </parent>
+
+    <name>Fuse :: Use Case 4 :: Routing</name>
+    <artifactId>routing</artifactId>
+
+    <properties>
+        <apache-ds.version>2.0.0-M6</apache-ds.version>
+        <apache-ds-shared.version>1.0.0-M11</apache-ds-shared.version>
+        <apache-ds-jdbm.version>2.0.0-M1</apache-ds-jdbm.version>
+        <activemq.version>5.11.1</activemq.version>
+        <xbean-spring.version>3.18</xbean-spring.version>
+        <slf4j-api.version>1.6.6</slf4j-api.version>
+        <log4j.version>1.2.17</log4j.version>
+        <junit.version>4.11</junit.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- Camel -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-bindy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-sql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+
+        <!-- ActiveMQ -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-broker</artifactId>
+            <version>${activemq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-spring</artifactId>
+            <version>${activemq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-jaas</artifactId>
+            <version>${activemq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-kahadb-store</artifactId>
+            <version>${activemq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-spring</artifactId>
+            <version>${xbean-spring.version}</version>
+        </dependency>
+
+        <!-- logging -->
+        <!-- We must downgrade slf4j as org.apache.commons.logging.impl.SLF4JLocationAwareLog reports this error
+            SLF4J: The requested version 1.6.99 by your slf4j binding is not compatible with [1.5.5, 1.5.6, 1.5.7, 1.5.8, 1.5.9, 1.5.10]
+            -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+        <!-- Testing
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+	-->
+
+        <!-- Apache DS -->
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-server-integ</artifactId>
+            <version>${apache-ds.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-core-integ</artifactId>
+            <version>${apache-ds.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.jdbm</groupId>
+            <artifactId>apacheds-jdbm2</artifactId>
+            <version>${apache-ds-jdbm.version}</version>
+        </dependency>
+
+        <!-- Apache DS Shared -->
+        <dependency>
+            <groupId>org.apache.directory.shared</groupId>
+            <artifactId>shared-ldap-client-api</artifactId>
+            <version>${apache-ds-shared.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.shared</groupId>
+            <artifactId>shared-ldap-model</artifactId>
+            <version>${apache-ds-shared.version}</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>camel-dummy</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.fuse.usecase4</groupId>
+                    <artifactId>routing</artifactId>
+                    <version>1.0</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <!-- Camel plugin -->
+                    <plugin>
+                        <groupId>org.apache.camel</groupId>
+                        <artifactId>camel-maven-plugin</artifactId>
+                        <configuration>
+                            <applicationContextUri>META-INF/spring/local/ldap-server.xml;META-INF/spring/local/*.xml
+                            </applicationContextUri>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!-- skipTests>true</skipTests -->
+			    <!-- argLine>-agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=y</argLine -->
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

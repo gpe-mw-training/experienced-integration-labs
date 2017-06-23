@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="usecases" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+  <feature name="usecase-camel-bindy-json" version="1.0">
+    <feature version="[2.12,3)">camel</feature>
+    <feature version="[2.12,3)">camel-bindy</feature>
+    <feature version="[2.12,3)">camel-jackson</feature>
+    <feature version="[2.12,3)">camel-dozer</feature>
+    <bundle>mvn:org.fuse.usecase1/routing/${project.version}</bundle>
+  </feature>
+</features>

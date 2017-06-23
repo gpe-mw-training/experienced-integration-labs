@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring
+       http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <!-- H2 DB -->
+    <bean id="usecaseDB" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    </bean>
+
+    <!-- SQL Component & Datasource -->
+    <bean id="sql" class="org.apache.camel.component.sql.SqlComponent">
+    </bean>
+
+    <!-- Spring JMS TxManager -->
+    <bean id="jmsTransactionManager" class="org.springframework.jms.connection.JmsTransactionManager">
+    </bean>
+
+    <!-- JMS ConnectionFactory  -->
+    <bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+    </bean>
+
+    <!-- ActiveMQ Camel Component - Tx -->
+    <bean id="amq-tx" class="org.apache.activemq.camel.component.ActiveMQComponent">
+    </bean>
+
+    <!-- ActiveMQ Camel Component - No Tx -->
+    <bean id="amq-notx" class="org.apache.activemq.camel.component.ActiveMQComponent">
+    </bean>
+
+    <camelContext trace="false" xmlns="http://camel.apache.org/schema/spring">
+
+        <propertyPlaceholder id="properties" location="fabric8/route.properties"/>
+    </camelContext>
+</beans>

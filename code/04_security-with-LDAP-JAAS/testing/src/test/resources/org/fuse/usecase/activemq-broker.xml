@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://activemq.apache.org/schema/core
+       http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <!-- ActiveMQ Broker -->
+    <broker brokerName="demo" xmlns="http://activemq.apache.org/schema/core">
+
+        <plugins>
+            <jaasAuthenticationPlugin configuration="LDAPLogin"/>
+            <authorizationPlugin>
+                <map>
+                    <cachedLDAPAuthorizationMap
+
+                            connectionURL="ldap://localhost:1024"
+                            queueSearchBase="ou=Queue,ou=Destination,ou=ActiveMQ,ou=system"
+                            topicSearchBase="ou=Topic,ou=Destination,ou=ActiveMQ,ou=system"
+                            tempSearchBase="ou=Temp,ou=Destination,ou=ActiveMQ,ou=system"
+                            legacyGroupMapping="true"
+                            refreshInterval="5000"
+                    />
+                    <!--
+                        connectionURL="ldap://localhost:1024"
+                        connectionUsername="uid=admin,ou=system"
+                        connectionPassword="secret"
+                        queueSearchBase="ou=Queue,ou=Destination,ou=ActiveMQ,ou=system"
+                        topicSearchBase="ou=Topic,ou=Destination,ou=ActiveMQ,ou=system"
+                        tempSearchBase="ou=Temp,ou=Destination,ou=ActiveMQ,ou=system"
+                        adminPermissionGroupSearchFilter="(cn=admin)"
+                        writePermissionGroupSearchFilter="(cn=write)"
+                        readPermissionGroupSearchFilter="(cn=read)"
+                        legacyGroupMapping="true"
+                        -->
+                </map>
+            </authorizationPlugin>
+        </plugins>
+    </broker>
+</beans>
