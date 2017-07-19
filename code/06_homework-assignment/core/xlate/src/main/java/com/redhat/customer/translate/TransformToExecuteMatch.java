@@ -21,7 +21,7 @@ public class TransformToExecuteMatch {
     SystemPerson systemPerson = new SystemPerson();
     PersonBean personBean = new PersonBean();
 
-    // We're feeling lazy so we only set the Father's name and Gender
+    // we only set the Father's name and Gender
     // Any of the other person objects could be set here
     personBean.setFirstName(person.getLegalname().getGiven());
     personBean.setFatherName(person.getFathername());

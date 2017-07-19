@@ -24,16 +24,8 @@
     </dataFormats>
 
     <route id="translate">
-      <!-- Normally queue values are set as dynamic properties
-      so we can change them without rebuilding the code -->
-      <from uri="activemqService:queue:customer" />
-        <unmarshal ref="personFormat" />
-        <convertBodyTo type="com.sun.mdm.index.webservice.ExecuteMatchUpdate" />
-        <log message="Converted body: ${body}" />
-        <marshal ref="nextgateFormat" />
-      <!-- Notice in the inbound route we just used the InOut component
-      here we used a pattern on the to component, they both work -->
-      <to uri="activemqService:queue:nextgate" pattern="InOut"/>
+
+
     </route>
 
   </camelContext>

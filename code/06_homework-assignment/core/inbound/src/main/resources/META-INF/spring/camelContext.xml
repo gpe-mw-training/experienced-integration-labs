@@ -30,29 +30,7 @@
 
     <!-- this is the route called by DEIMServiceImpl -->
     <route id="handleRest">
-      <from uri="direct:integrateRoute" />
-        <log message="The REST method is: ${in.header.METHOD}" />
-      <!-- recipientList is used when the output destination needs to be dynmaic -->
-      <recipientList>
-        <!-- The only method we have is match so this will go to direct:match -->
-        <simple>direct:${in.header.METHOD}</simple>
-      </recipientList>
-    </route>
 
-    <route id="matchRoute">
-      <from uri="direct:match" />
-        <marshal ref="personFormat" />
-        <log message="The payload is : ${body}" />
-      <!-- normally this queue would be set with a property value -->
-      <inOut uri="activemqService:queue:customer" />
-
-      <!-- Comment out the line above and uncomment the section below
-      if you would like to see the route function asynchronously -->
-
-      <!--inOnly uri="activemqService:queue:customer" />
-        <transform>
-          <constant>2</constant>
-        </transform-->
 
     </route>
 

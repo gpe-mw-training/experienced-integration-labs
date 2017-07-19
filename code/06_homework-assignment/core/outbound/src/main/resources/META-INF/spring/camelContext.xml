@@ -32,34 +32,7 @@
 
     <!-- stream caching has to be enabled to process the message and log it from cxf -->
     <route id="sendToNextGate" streamCache="true">
-      <!-- the queue that we receive from is normally set as a property -->
-      <from uri="activemqService:queue:nextgate" />
-        <log loggingLevel="INFO" message="Message from outbound queue: ${body}" />
-        <setHeader headerName="operationName">
-          <constant>executeMatchUpdate</constant>
-        </setHeader>
-      <to uri="{{nextgate.url}}" pattern="InOut"/>
-        <log message="Response from CXF : ${body}" />
-        <!-- here we will look at the result code and set the body based on it -->
-        <choice>
-          <when>
-            <xpath>//resultCode = '0'</xpath>
-            <transform>
-              <simple>0</simple>
-            </transform>
-          </when>
-          <when>
-            <xpath>//resultCode = '1'</xpath>
-            <transform>
-              <simple>1</simple>
-            </transform>
-          </when>
-          <otherwise>
-            <transform>
-              <simple>-1</simple>
-            </transform>
-          </otherwise>
-        </choice>
+
     </route>
 
   </camelContext>
