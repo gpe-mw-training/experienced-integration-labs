@@ -16,9 +16,7 @@ import org.acme.Customer;
 public class CustomerRoute extends RouteBuilder {
     @Override
     public void configure () throws Exception {
-//        getContext().getProperties().put("CamelJacksonEnableTypeConverter", "true");
         onException(IllegalArgumentException.class).to("log:fail").to("file://src/data/error?fileName=csv-record-${date:now:yyyyMMdd}.txt").handled(true).stop();
-//        from("timer:foo").to("log:bar");
         BindyCsvDataFormat format = new BindyCsvDataFormat(org.acme.Customer.class);
         format.setLocale("default");
         from("file://src/data/inbox?fileName=customers.csv&noop=true")
@@ -28,12 +26,6 @@ public class CustomerRoute extends RouteBuilder {
             .process(new CustomerProcessor())
             .to("log:transformed")
             .marshal().json(JsonLibrary.Jackson).to("file://src/data/outbox?fileName=account-${property.CamelSplitIndex}.json");
-//            .transform().expression(new CustomerTransformer()).to("log:tranformed");
-//            .unmarshal(format);
-//                .transform().
-////                .json()
-//                .to("file://src/data/outbox?fileName=account-${property.CamelSplitIndex}.json").
-//                onException(IllegalArgumentException.class).to("file://src/data/error?fileName=csv-record-${date:now:yyyyMMdd}.txt");
     }
 
     class CustomerProcessor implements Processor {
