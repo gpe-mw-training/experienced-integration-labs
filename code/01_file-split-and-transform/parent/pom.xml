@@ -135,6 +135,4 @@
             <url>http://maven.repository.redhat.com/techpreview/all</url>
         </pluginRepository>
     </pluginRepositories>
-
-
 </project>

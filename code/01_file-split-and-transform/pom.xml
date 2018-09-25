@@ -11,9 +11,8 @@
     <name>Fuse :: Use Case 1 :: Project</name>
 
     <modules>
-        <module>routing</module>
-        <module>features</module>
         <module>parent</module>
+        <module>routing</module>
     </modules>
 
 </project>

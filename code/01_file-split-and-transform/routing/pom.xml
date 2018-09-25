@@ -23,10 +23,6 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-bindy</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apache.camel</groupId>-->
-            <!--<artifactId>camel-dozer</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jackson</artifactId>
@@ -79,62 +75,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Camel plugin -->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.camel</groupId>-->
-                <!--<artifactId>camel-maven-plugin</artifactId>-->
-                <!--<configuration>-->
-                    <!--<applicationContextUri>META-INF/spring/camel-context.xml</applicationContextUri>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-
-            <!--&lt;!&ndash; Fabric8 Plugin &ndash;&gt;-->
-            <!--<plugin>-->
-                <!--<groupId>io.fabric8</groupId>-->
-                <!--<artifactId>fabric8-maven-plugin</artifactId>-->
-            <!--</plugin>-->
-
-            <!--&lt;!&ndash; TO BE USED WHEN WE WOULD LIKE TO GENERATE LOCALLY THE CLASSES-->
-            <!--<plugin>-->
-                <!--<groupId>org.jsonschema2pojo</groupId>-->
-                <!--<artifactId>jsonschema2pojo-maven-plugin</artifactId>-->
-                <!--<version>0.4.16</version>-->
-                <!--<configuration>-->
-                    <!--<sourceDirectory>${basedir}/src/main/resources/schema/json</sourceDirectory>-->
-                    <!--<targetPackage>org.globex</targetPackage>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<goals>-->
-                            <!--<goal>generate</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-            <!--&ndash;&gt;-->
-            <!--&lt;!&ndash; Attach the properties file as an artifact, so that it is published to the maven repository &ndash;&gt;-->
-            <!--<plugin>-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>build-helper-maven-plugin</artifactId>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>attach-artifacts</id>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>attach-artifact</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<artifacts>-->
-                                <!--<artifact>-->
-                                    <!--<file>target/classes/fabric8/route.properties</file>-->
-                                    <!--<type>properties</type>-->
-                                <!--</artifact>-->
-                            <!--</artifacts>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
         </plugins>
     </build>
-
 </project>

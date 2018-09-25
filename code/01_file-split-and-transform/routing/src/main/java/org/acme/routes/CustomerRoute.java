@@ -16,16 +16,25 @@ import org.acme.Customer;
 public class CustomerRoute extends RouteBuilder {
     @Override
     public void configure () throws Exception {
-        onException(IllegalArgumentException.class).to("log:fail").to("file://src/data/error?fileName=csv-record-${date:now:yyyyMMdd}.txt").handled(true).stop();
+        onException(IllegalArgumentException.class)
+            .to("log:fail")
+            .to("file://src/data/error?fileName=csv-record-${date:now:yyyyMMdd}.txt")
+            .handled(true)
+            .stop();
+
         BindyCsvDataFormat format = new BindyCsvDataFormat(org.acme.Customer.class);
         format.setLocale("default");
+
         from("file://src/data/inbox?fileName=customers.csv&noop=true")
-            .split().tokenize("\n")
+            .split()
+            .tokenize("\n")
             .to("log:bar")
-            .unmarshal(format).to("log:foo")
+            .unmarshal(format)
+            .to("log:foo")
             .process(new CustomerProcessor())
             .to("log:transformed")
-            .marshal().json(JsonLibrary.Jackson).to("file://src/data/outbox?fileName=account-${property.CamelSplitIndex}.json");
+            .marshal().json(JsonLibrary.Jackson)
+            .to("file://src/data/outbox?fileName=account-${property.CamelSplitIndex}.json");
     }
 
     class CustomerProcessor implements Processor {
