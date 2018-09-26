@@ -30,4 +30,4 @@ styles/
 **/src/data/outbox
 **/activemq-data
 
-
+.idea/
