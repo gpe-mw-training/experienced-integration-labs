@@ -1,11 +1,14 @@
 package org.acme.routes;
 
+import org.acme.config.CustomerRouteProperties;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.dataformat.bindy.csv.BindyCsvDataFormat;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.language.ExpressionDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.globex.Account;
 import org.globex.Company;
@@ -14,6 +17,10 @@ import org.acme.Customer;
 
 @Component
 public class CustomerRoute extends RouteBuilder {
+
+    @Autowired
+    private CustomerRouteProperties customerRouteProperties;
+
     @Override
     public void configure () throws Exception {
         onException(IllegalArgumentException.class)
@@ -25,7 +32,7 @@ public class CustomerRoute extends RouteBuilder {
         BindyCsvDataFormat format = new BindyCsvDataFormat(org.acme.Customer.class);
         format.setLocale("default");
 
-        from("file://src/data/inbox?fileName=customers.csv&noop=true")
+        from(customerRouteProperties.getInput())
             .split()
             .tokenize("\n")
             .to("log:bar")
@@ -34,7 +41,7 @@ public class CustomerRoute extends RouteBuilder {
             .process(new CustomerProcessor())
             .to("log:transformed")
             .marshal().json(JsonLibrary.Jackson)
-            .to("file://src/data/outbox?fileName=account-${property.CamelSplitIndex}.json");
+            .to(customerRouteProperties.getOutput());
     }
 
     class CustomerProcessor implements Processor {

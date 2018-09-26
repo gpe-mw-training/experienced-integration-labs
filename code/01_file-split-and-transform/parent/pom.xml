@@ -34,6 +34,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>1.5.13.RELEASE</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -41,7 +46,7 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.springframework.boot</groupId>
+                    <groupId>org.jboss.redhat-fuse</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                 </plugin>
                 <plugin>
