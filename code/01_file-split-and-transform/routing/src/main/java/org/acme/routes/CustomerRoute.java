@@ -35,10 +35,14 @@ public class CustomerRoute extends RouteBuilder {
         from(customerRouteProperties.getInput())
             .split()
             .tokenize("\n")
-            .to("log:bar")
+            .to("log:tokenized")
             .unmarshal(format)
-            .to("log:foo")
+            .to("log:unmarshalled")
+            .to("dozer:customerToAccount?mappingFile=transformation.xml&sourceModel=org.acme.Customer&targetModel=org.globex.Account")
+            /*
+            If you want to use a processor, uncomment the line below and comment the dozer line above
             .process(new CustomerProcessor())
+             */
             .to("log:transformed")
             .marshal().json(JsonLibrary.Jackson)
             .to(customerRouteProperties.getOutput());
