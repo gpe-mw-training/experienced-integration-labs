@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:osgi="http://www.springframework.org/schema/osgi"
        xmlns:cxf="http://camel.apache.org/schema/cxf"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/osgi
-       http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://camel.apache.org/schema/cxf
-       http://camel.apache.org/schema/cxf/camel-cxf-spring.xsd
-       http://camel.apache.org/schema/spring
-       http://camel.apache.org/schema/spring/camel-spring.xsd">
+       http://camel.apache.org/schema/cxf/camel-cxf-spring.xsd">
 
     <!-- H2 DB -->
     <bean id="usecaseDB" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -32,14 +27,14 @@
 
     <cxf:rsServer id="customerRestService" address="http://localhost:9191/rest"
                   serviceClass="org.fuse.usecase.service.CustomerRest"
-                  loggingFeatureEnabled="false">
+                  loggingFeatureEnabled="true">
         <cxf:providers>
             <ref bean="jsonProvider"/>
         </cxf:providers>
     </cxf:rsServer>
 
     <cxf:rsClient id="customerRestServiceClient" address="http://localhost:9191/rest"
-                  loggingFeatureEnabled="false" serviceClass="org.fuse.usecase.service.CustomerRest">
+                  loggingFeatureEnabled="true" serviceClass="org.fuse.usecase.service.CustomerRest">
         <cxf:providers>
             <ref bean="jsonProvider"/>
         </cxf:providers>
@@ -49,15 +44,16 @@
     <bean id="customerWSImplBean" class="org.fuse.usecase.service.CustomerWSImpl"/>
     <bean id="customerRestImplBean" class="org.fuse.usecase.service.CustomerRestImpl"/>
     <bean id="processorBean" class="org.fuse.usecase.ProcessorBean"/>
+    <bean id="account" class="org.globex.Account"/>
 
     <!--  THIS PROVIDER DOESN'T WORK & RETURN ERROR 415 Unsupported Media Type
       It can't also handle the Body : No message body reader has been found for
       class CXF_Test.cxf_test.Book, ContentType: application/json
       <bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.json.JSONProvider"/>
     -->
-    <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"/>
+    <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider">
+        <property name="mapper" ref="jsonMapper"/>
+    </bean>
 
-    <camelContext trace="false" xmlns="http://camel.apache.org/schema/spring">
-        <propertyPlaceholder id="properties" location="fabric8/route.properties"/>
-    </camelContext>
+    <bean id="jsonMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
 </beans>

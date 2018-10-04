@@ -13,7 +13,8 @@ public class CustomerRestImpl implements CustomerRest {
     private static final String WE_REGION = "WEST_AMERICA";
     private static final String EAST_REGION = "EAST_AMERICA";
 
-    @Override public Account enrich(Account account) {
+    @Override
+    public Account enrich(Account account) {
         Company company = account.getCompany();
         String region = company.getGeo();
         switch (region) {

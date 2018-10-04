@@ -15,46 +15,74 @@
 
     <properties>
         <!-- Version of JBoss Fuse used for the use case -->
-        <jboss.fuse.bom.version>6.2.1.redhat-084</jboss.fuse.bom.version>
+        <fuse.version>7.1.0.fuse-710019-redhat-00002</fuse.version>
 
-        <!-- Versions should be the same as defined within the Fuse BOM -->
-        <camel.version>2.15.1.redhat-621084</camel.version>
-        <cxf.version>2.15.1.redhat-621084</cxf.version>
-
-        <!-- Apache Maven plugins -->
-        <build-helper-maven-plugin.version>1.9.1</build-helper-maven-plugin.version>
-        <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-        <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+        <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire.version>2.19.1</maven-surefire.version>
         <maven-install-plugin.version>2.3.1</maven-install-plugin.version>
-        <felix-maven-plugin.version>2.3.7</felix-maven-plugin.version>
-        <fabric8-plugin.version>1.2.0.redhat-621084</fabric8-plugin.version>
-
-        <!-- OSGI Properties required for the Apache Felix Plugin -->
-        <osgi-import-package>*</osgi-import-package>
-        <osgi-export-package/>
-        <osgi-private-package/>
-        <osgi-dynamic-package/>
+        <jackson-jaxrs.version>2.8.11.redhat-1</jackson-jaxrs.version>
+        <h2-driver.version>1.4.197</h2-driver.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.jboss.fuse.bom</groupId>
-                <artifactId>jboss-fuse-parent</artifactId>
-                <version>${jboss.fuse.bom.version}</version>
+                <groupId>org.jboss.redhat-fuse</groupId>
+                <artifactId>fuse-springboot-bom</artifactId>
+                <version>${fuse.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-parent</artifactId>
-                <version>${camel.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>1.5.13.RELEASE</version>
             </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2-driver.version}</version>
+            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>com.fasterxml.jackson.jaxrs</groupId>-->
+                <!--<artifactId>jackson-jaxrs-provider</artifactId>-->
+                <!--<version>${jackson-jaxrs.version}</version>-->
+            <!--</dependency>-->
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jboss.redhat-fuse</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${fuse.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <dependencies>
         <!-- Camel -->
@@ -88,80 +116,12 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
     </dependencies>
 
 
-    <build>
-        <defaultGoal>install</defaultGoal>
-
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.camel</groupId>
-                    <artifactId>camel-maven-plugin</artifactId>
-                    <version>${camel.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <version>${felix-maven-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>io.fabric8</groupId>
-                    <artifactId>fabric8-maven-plugin</artifactId>
-                    <version>${fabric8-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>${build-helper-maven-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>${maven-resources-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>${felix-maven-plugin.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Import-Package>${osgi-import-package}</Import-Package>
-                        <Private-Package>${osgi-private-package}</Private-Package>
-                        <Export-Package>${osgi-export-package}</Export-Package>
-                        <DynamicImport-Package>${osgi-dynamic-package}</DynamicImport-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <repositories>
         <repository>
