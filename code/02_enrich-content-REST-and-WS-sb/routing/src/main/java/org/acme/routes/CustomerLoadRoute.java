@@ -15,11 +15,6 @@ public class CustomerLoadRoute extends RouteBuilder {
 
     @Override
     public void configure () throws Exception {
-        onException(Exception.class)
-            .to("log:onException")
-            .handled(true)
-            .transform(constant("Exception thrown. Stop route"));
-
         JacksonDataFormat format = new JacksonDataFormat(org.globex.Account.class);
 
         from(customerLoadRouteProperties.getInput()).routeId("customer-load")
@@ -28,9 +23,7 @@ public class CustomerLoadRoute extends RouteBuilder {
             .to("log:unmarshalled")
             .multicast(new AccountAggregator())
             .to(customerLoadRouteProperties.getRestEndpoint(), customerLoadRouteProperties.getWsEndpoint()).end()
-            .to(customerLoadRouteProperties.getOutput())
-            .to("log:enriched");
-//            .to(customerLoadRouteProperties.getOutput())
-//            .to("log:end-enrich");
+            .to("log:enriched")
+            .to(customerLoadRouteProperties.getOutput());
     }
 }

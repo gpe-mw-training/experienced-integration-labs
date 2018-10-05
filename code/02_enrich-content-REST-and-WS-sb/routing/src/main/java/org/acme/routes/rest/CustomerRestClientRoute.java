@@ -2,10 +2,12 @@ package org.acme.routes.rest;
 
 import org.acme.config.rest.CustomerRestClientRouteProperties;
 import org.apache.camel.Exchange;
-import org.apache.camel.ExchangePattern;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.jackson.JacksonDataFormat;
+import org.apache.camel.component.jackson.ListJacksonDataFormat;
+import org.globex.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +24,14 @@ public class CustomerRestClientRoute extends RouteBuilder {
                 .handled(true)
                 .transform(constant("Exception thrown. Stop route"));
 
+        JacksonDataFormat dataFormat = new ListJacksonDataFormat(Account.class);
+
         from(customerRestClientRouteProperties.getInput()).routeId("customer-rest")
             .to("log:rest-picked-up")
             .process(new AccountHeaderProcessor())
             .inOut(customerRestClientRouteProperties.getOutput())
+            .unmarshal(dataFormat)
             .to("log:sent-to-rest");
-//            .to("direct:insertDb");
     }
 
     class AccountHeaderProcessor implements Processor {

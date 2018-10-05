@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "org.acme.customer.load")
 public class CustomerLoadRouteProperties {
-    private String input = "file://src/data/outbox?noop=true";
+    private String input = "file://src/data/outbox?noop=true&idempotent=true";
     private String restEndpoint = "direct:callRestEndpoint";
     private String wsEndpoint = "direct:callWsEndpoint";
     private String output = "direct:insertDb";

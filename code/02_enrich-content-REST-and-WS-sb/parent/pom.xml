@@ -36,20 +36,10 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <version>1.5.13.RELEASE</version>
-            </dependency>
-            <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2-driver.version}</version>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>com.fasterxml.jackson.jaxrs</groupId>-->
-                <!--<artifactId>jackson-jaxrs-provider</artifactId>-->
-                <!--<version>${jackson-jaxrs.version}</version>-->
-            <!--</dependency>-->
         </dependencies>
     </dependencyManagement>
 
