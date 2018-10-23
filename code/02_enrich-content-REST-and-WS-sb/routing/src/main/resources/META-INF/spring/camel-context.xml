@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<routes xmlns="http://www.springframework.org/schema/spring"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:osgi="http://www.springframework.org/schema/osgi"
        xmlns:cxf="http://camel.apache.org/schema/cxf"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/osgi
-       http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://camel.apache.org/schema/cxf
        http://camel.apache.org/schema/cxf/camel-cxf-spring.xsd
        http://camel.apache.org/schema/spring
@@ -60,4 +57,138 @@
     <camelContext trace="false" xmlns="http://camel.apache.org/schema/spring">
         <propertyPlaceholder id="properties" location="fabric8/route.properties"/>
     </camelContext>
-</beans>
+        <endpoint
+                uri="dozer:csv2json?sourceModel=org.acme.Customer&amp;targetModel=org.globex.Account&amp;marshalId=json&amp;unmarshalId=csv&amp;mappingFile=transformation.xml"
+                id="csv2json"/>
+
+        <!-- CSV Input & JSon OutPut DataFormat -->
+        <dataFormats>
+            <bindy id="csv" type="Csv" classType="org.acme.Customer"/>
+            <json id="json" library="Jackson"/>
+        </dataFormats>
+
+        <!-- Route Definition CSV to JSON -->
+        <route>
+            <!-- Consume files from input directory -->
+            <from uri="file:{{fileInput}}?fileName=customers.csv&amp;noop=true"/>
+            <log loggingLevel="INFO" message="after reading file input"/>
+            <onException>
+                <exception>java.lang.IllegalArgumentException</exception>
+                <handled>
+                    <constant>true</constant>
+                </handled>
+                <to uri="file:{{fileError}}?fileName=csv-record-${date:now:yyyyMMdd}.txt"/>
+            </onException>
+            <split>
+                <tokenize token="\n"/>
+                <to ref="csv2json"/>
+                <to uri="file:{{fileOutput}}?fileName=account-${property.CamelSplitIndex}.json"/>
+            </split>
+        </route>
+
+        <!-- Multicast the account to the REST & WS to aggregate the result -->
+        <route>
+            <from uri="file:{{fileOutput}}"/>
+            <log loggingLevel="INFO" message="after reading file output"/>
+            <convertBodyTo type="String"/>
+            <multicast strategyRef="reconcileData">
+              <log loggingLevel="INFO" message="inside multicast"/>
+                <to uri="direct://callRestEndpoint"/>
+                <to uri="direct://callWSEndpoint"/>
+            </multicast>
+	    <!--
+            <log loggingLevel="INFO"
+                 message=">> Aggregated result: Account : ${body.clientId}, ${body.salesRepresentative}; Company : ${body.company.name}, ${body.company.geo}, ${body.company.active}; Contact : ${body.contact.firstName}, ${body.contact.lastName}, ${body.contact.streetAddr}, ${body.contact.city}, ${body.contact.state}, ${body.contact.zip}, ${body.contact.phone}"/>
+	    -->
+            <to uri="direct:insertDB"/>
+        </route>
+
+        <!-- REST Service -->
+        <route>
+            <from uri="cxfrs:bean:customerRestService"/>
+            <bean ref="customerRestImplBean" method="enrich"/>
+        </route>
+
+        <!-- WebService -->
+        <route>
+            <from uri="camelcxf:bean:customerWebService"/>
+            <bean ref="customerWSImplBean" method="updateAccount"/>
+        </route>
+
+        <!-- Call WebService Client -->
+        <route>
+            <from uri="direct://callWSEndpoint"/>
+            <unmarshal>
+                <json library="Jackson" unmarshalTypeName="org.globex.Account"/>
+            </unmarshal>
+            <to uri="camelcxf:bean:customerWebService"/>
+<!--
+	    <log message=">> WebService Response just the body : ${body[0]}"/>
+            <log loggingLevel="INFO"
+                 message=">> WebService Response : ${body[0].id}, ${body[0].salesContact}, ${body[0].company.geo}, ${body[0].contact.firstName}, ${body[0].contact.lastName} "/>
+-->
+        </route>
+        <!-- Call REST Client -->
+        <route>
+            <from uri="direct://callRestEndpoint"/>
+            <onException>
+                <exception>java.lang.Exception</exception>
+                <redeliveryPolicy maximumRedeliveries="1"/>
+                <handled>
+                    <constant>true</constant>
+                </handled>
+                <log message=">> Error : ${exception.message}, ${exception.stacktrace}"/>
+            </onException>
+            <setHeader headerName="Content-Type">
+                <constant>application/json</constant>
+            </setHeader>
+            <setHeader headerName="Accept">
+                <constant>application/json</constant>
+            </setHeader>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>POST</constant>
+            </setHeader>
+
+<!--             <setHeader headerName="CamelHttpPath"> -->
+<!--                 <constant>/customerservice/enrich</constant> -->
+<!--             </setHeader> -->
+<!--             <setHeader headerName="CamelCxfRsUsingHttpAPI"> -->
+<!--                 <constant>True</constant> -->
+<!--             </setHeader> -->
+
+            <setHeader headerName="originalBody">
+                <simple>${body}</simple>
+            </setHeader>
+            <!-- HTTP4 -->
+            <setHeader headerName="CamelHttpUri">
+                <simple>http://localhost:9191/rest/customerservice/enrich</simple>
+            </setHeader>
+	    <log message=">> Before calling restClient : ${body}"/>
+
+<!--             <inOut uri="cxfrs:bean:customerRestServiceClient"/> -->
+<!--             <bean beanType="org.fuse.usecase.ProcessorBean" method="convertEntityToString"/> -->
+
+            <to uri="undertow://restClient"/>
+            <convertBodyTo type="String"/>
+	    <log message=">> REST Response as String : ${body}"/>
+            <unmarshal>
+                <json library="Jackson" unmarshalTypeName="org.globex.Account"/>
+            </unmarshal>
+	    <log message=">> REST Response : ${body}"/>
+<!--
+            <setBody>
+                <simple>${body}</simple>
+            </setBody>
+-->
+        </route>
+
+        <!-- Insert Records -->
+        <route>
+            <from uri="direct:insertDB"/>
+            <bean ref="processorBean" method="defineNamedParameters"/>
+            <to uri="sql:INSERT INTO USECASE.T_ACCOUNT(CLIENT_ID,SALES_CONTACT,COMPANY_NAME,COMPANY_GEO,COMPANY_ACTIVE,CONTACT_FIRST_NAME,CONTACT_LAST_NAME,CONTACT_ADDRESS,CONTACT_CITY,CONTACT_STATE,CONTACT_ZIP,CONTACT_PHONE,CREATION_DATE,CREATION_USER)
+                         VALUES
+                         (:#CLIENT_ID,:#SALES_CONTACT,:#COMPANY_NAME,:#COMPANY_GEO,:#COMPANY_ACTIVE,:#CONTACT_FIRST_NAME,:#CONTACT_LAST_NAME,:#CONTACT_ADDRESS,:#CONTACT_CITY,:#CONTACT_STATE,:#CONTACT_ZIP,:#CONTACT_PHONE,:#CREATION_DATE,:#CREATION_USER);"/>
+            <log message=">>> Results : ${body}"/>
+        </route>
+</routes>

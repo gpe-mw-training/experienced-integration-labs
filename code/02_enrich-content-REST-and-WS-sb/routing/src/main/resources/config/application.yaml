@@ -1,3 +1,4 @@
 camel:
   springboot:
     main-run-controller: true
+    xmlRoutes: classpath:META-INF/spring/*.xml
