@@ -1,0 +1,25 @@
+spec:
+  template:
+    spec:
+      containers:
+        - 
+          resources:
+            requests:
+              cpu: "1.0"
+              memory: 512Mi
+            limits:
+              cpu: "1.0"
+              memory: 1Gi
+          env:
+          - name: SPRING_APPLICATION_JSON
+            value: '{"server":{"undertow":{"io-threads":1, "worker-threads":2 }}}'
+          - name: AMQP_HOST
+            value: broker-amq-amqp
+          - name: REST_HOST
+            value: fuse-exp-usecase-mod2-cxfrs-rest
+          - name: REST_PORT
+            value: 8080
+          - name: SOAP_HOST
+            value: fuse-exp-usecase-mod2-cxfws-soap                       
+          - name: SOAP_PORT
+            value: 8080               

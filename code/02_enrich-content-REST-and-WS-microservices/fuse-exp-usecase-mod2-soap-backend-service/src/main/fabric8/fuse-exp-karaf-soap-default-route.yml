@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Route
+spec:
+  port:
+    targetPort: 8181
+  to:
+    kind: Service
+    name: fuse-exp-usecase-mod2-cxfws-soap
+    weight: 100
+  wildcardPolicy: None
+status: {}
