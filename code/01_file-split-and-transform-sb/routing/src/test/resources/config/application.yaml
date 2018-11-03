@@ -1,5 +1,0 @@
-org:
-  acme:
-    customer:
-      input: file://src/test/data/inbox?fileName=customers.csv&noop=true
-      output: mock:csv2json-test-output
