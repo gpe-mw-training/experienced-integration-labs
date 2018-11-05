@@ -1,2 +1,0 @@
-companyName,region,active,firstName,lastName,streetAddr,city,state,zip,phone
-string,string,boolean,string,string,string,string,string,string,string
