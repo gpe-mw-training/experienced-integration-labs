@@ -7,7 +7,7 @@ To build this project use
 
 To run the project you can execute the following Maven goal
 
-    mvn camel:run
+    mvn spring-boot:run
 
 For more help see the Apache Camel documentation
 
