@@ -20,6 +20,6 @@ spec:
           - name: REST_PORT
             value: 8080
           - name: SOAP_HOST
-            value: fuse-exp-usecase-mod2-cxfws-soap                       
+            value: fuse-exp-usecase-mod2-cx                      
           - name: SOAP_PORT
             value: 8080               
