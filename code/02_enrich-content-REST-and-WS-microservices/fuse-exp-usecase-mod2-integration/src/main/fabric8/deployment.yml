@@ -13,13 +13,3 @@ spec:
           env:
           - name: SPRING_APPLICATION_JSON
             value: '{"server":{"undertow":{"io-threads":1, "worker-threads":2 }}}'
-          - name: AMQP_HOST
-            value: broker-amq-amqp
-          - name: REST_HOST
-            value: fuse-exp-usecase-mod2-cxfrs-rest
-          - name: REST_PORT
-            value: 8080
-          - name: SOAP_HOST
-            value: fuse-exp-usecase-mod2-cx                      
-          - name: SOAP_PORT
-            value: 8080               

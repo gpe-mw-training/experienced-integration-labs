@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:amq="http://activemq.apache.org/schema/core"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+           xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+	     http://www.springframework.org/schema/beans
+	     http://www.springframework.org/schema/beans/spring-beans.xsd
+	     http://activemq.apache.org/schema/core
+	     http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <!-- ActiveMQ Broker -->
+    <broker brokerName="demo" xmlns="http://activemq.apache.org/schema/core">
+
+        <destinationPolicy>
+            <policyMap>
+                <policyEntries>
+                    <policyEntry queue=">">
+                    </policyEntry>
+                </policyEntries>
+            </policyMap>
+        </destinationPolicy>
+
+        <plugins>
+        </plugins>
+
+        <transportConnectors>
+            <transportConnector name="tcp" uri="tcp://localhost:61616"/>
+        </transportConnectors>
+    </broker>
+</blueprint>

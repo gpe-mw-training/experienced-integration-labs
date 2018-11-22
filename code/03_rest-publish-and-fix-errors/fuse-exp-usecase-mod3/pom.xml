@@ -4,8 +4,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.redhat.training.gpte</groupId>
-  <artifactId>fuse-exp-usecase-mod3</artifactId>
-  <version>1.0.0</version>
+  <artifactId>springboot-test</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 
   <name>Fabric8 :: Quickstarts :: Spring-Boot :: Camel XML</name>
   <description>Spring Boot example running a Camel route defined in XML</description>

@@ -3,11 +3,31 @@
     xmlns:camel="http://camel.apache.org/schema/spring"
     xmlns:cxf="http://camel.apache.org/schema/cxf"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd       http://camel.apache.org/schema/cxf  http://camel.apache.org/schema/cxf/camel-cxf.xsd">
-
-    <cxf:cxfEndpoint
-        address="http://{{soap.host}}:{{soap.port}}/ws/customerService"
+    <!-- H2 DB -->
+<!-- 
+    <bean
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="usecaseDB">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:tcp://localhost/~/usecaseDB"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+ -->    
+    <!-- SQL Component & Datasource -->
+    <!-- 
+    <bean class="org.apache.camel.component.sql.SqlComponent" id="sql">
+        <property name="dataSource" ref="usecaseDB"/>
+    </bean>
+     -->
+    <cxf:cxfEndpoint address="{{camel.soap.backend.host}}/ws/customerService"
         id="customerWebService" loggingFeatureEnabled="true"
         serviceClass="org.fuse.usecase.service.CustomerWS" wsdlURL="classpath:wsdl/customerService.wsdl"/>
+    <cxf:rsClient address="{{camel.rest.backend.host}}/rest"
+        id="customerRestServiceClient" loggingFeatureEnabled="false" serviceClass="org.fuse.usecase.service.CustomerRest">
+        <cxf:providers>
+            <ref bean="jsonProvider"/>
+        </cxf:providers>
+    </cxf:rsClient>
     <bean class="org.fuse.usecase.AccountAggregator" id="reconcileData"/>
     <bean class="org.fuse.usecase.ProcessorBean" id="processorBean"/>
     <!--  THIS PROVIDER DOESN'T WORK & RETURN ERROR 415 Unsupported Media Type
@@ -18,5 +38,77 @@
     <bean
         class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider" id="jsonProvider"/>
     <camelContext id="_camelContext1" xmlns="http://camel.apache.org/schema/spring">
+        <restConfiguration bindingMode="off" component="servlet"
+            contextPath="/rest" host="localhost" port="8181"/>
+        <rest apiDocs="true" consumes="application/json"
+            enableCORS="true"
+            id="rest-fba86e71-44f3-46c1-a71c-f311edfa9d05"
+            path="/account" produces="application/json">
+            <post id="41f43632-5d15-49a1-9d54-0495fbc269d4" uri="/service">
+                <to id="_to12" uri="direct:usecase"/>
+            </post>
+        </rest>
+        <route id="_route3">
+            <from id="_from3" uri="direct:usecase"/>
+            <convertBodyTo id="_convertBodyTo1" type="String"/>
+            <multicast id="_multicast1" parallelProcessing="true" strategyRef="reconcileData">
+                <log id="_log2" loggingLevel="INFO" message="inside multicast"/>
+                <to id="_to4" uri="direct://callRestEndpoint"/>
+                <to id="_to5" uri="direct://callWSEndpoint"/>
+            </multicast>
+            <log id="_log8" loggingLevel="INFO" message="after multicast : ${body}"/>
+            <to id="_to6" uri="direct:insertDB"/>
+        </route>
+        <!-- Call WebService Client -->
+        <route id="_route5">
+            <from id="_from5" uri="direct://callWSEndpoint"/>
+            <log id="_log12" message="In the SOAP service request: ${body}"/>
+            <unmarshal id="_unmarshal1">
+                <json library="Jackson" unmarshalTypeName="org.globex.Account"/>
+            </unmarshal>
+            <to id="_to7" uri="cxf:bean:customerWebService"/>
+            <log id="_log10" loggingLevel="INFO" message=">> WebService Response : ${body[0].id}, ${body[0].salesContact}, ${body[0].company.geo}, ${body[0].contact.firstName}, ${body[0].contact.lastName} "/>
+        </route>
+        <!-- Call REST Client -->
+        <route id="_route6">
+            <from id="_from6" uri="direct://callRestEndpoint"/>
+            <onException id="_onException2">
+                <exception>java.lang.Exception</exception>
+                <redeliveryPolicy maximumRedeliveries="1"/>
+                <handled>
+                    <constant>true</constant>
+                </handled>
+                <log id="_log3" message=">> Error : ${exception.message}, ${exception.stacktrace}"/>
+            </onException>
+            <setHeader headerName="Content-Type" id="_setHeader1">
+                <constant>application/json</constant>
+            </setHeader>
+            <setHeader headerName="Accept" id="_setHeader2">
+                <constant>application/json</constant>
+            </setHeader>
+            <setHeader headerName="CamelHttpMethod" id="_setHeader3">
+                <constant>POST</constant>
+            </setHeader>
+            <setHeader headerName="originalBody" id="_setHeader4">
+                <simple>${body}</simple>
+            </setHeader>
+            <setHeader headerName="CamelHttpUri" id="_setHeader5">
+                <simple>{{camel.rest.backend.host}}/rest/customerservice/enrich</simple>
+            </setHeader>
+            <log id="_log4" message=">> Before calling restClient : ${body}"/>
+            <to id="_to8" uri="http4://restClient"/>
+            <unmarshal id="_unmarshal2">
+                <json library="Jackson" unmarshalTypeName="org.globex.Account"/>
+            </unmarshal>
+            <log id="_log6" message=">> REST Response : ${body}"/>
+        </route>
+        <!-- Insert Records -->
+        <route id="_route7">
+            <from id="_from7" uri="direct:insertDB"/>
+            <log id="_log11" message=">> Before Insert : ${body}"/>
+            <bean id="_bean3" method="defineNamedParameters" ref="processorBean"/>
+            <to id="_to9" uri="sql:INSERT INTO USECASE.T_ACCOUNT(CLIENT_ID,SALES_CONTACT,COMPANY_NAME,COMPANY_GEO,COMPANY_ACTIVE,CONTACT_FIRST_NAME,CONTACT_LAST_NAME,CONTACT_ADDRESS,CONTACT_CITY,CONTACT_STATE,CONTACT_ZIP,CONTACT_PHONE,CREATION_DATE,CREATION_USER)                          VALUES                          (:#CLIENT_ID,:#SALES_CONTACT,:#COMPANY_NAME,:#COMPANY_GEO,:#COMPANY_ACTIVE,:#CONTACT_FIRST_NAME,:#CONTACT_LAST_NAME,:#CONTACT_ADDRESS,:#CONTACT_CITY,:#CONTACT_STATE,:#CONTACT_ZIP,:#CONTACT_PHONE,:#CREATION_DATE,:#CREATION_USER);"/>
+            <log id="_log7" message=">>> Results : ${body}"/>
+        </route>
     </camelContext>
 </beans>

@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.redhat.gpte.training</groupId>
-  <artifactId>fuse-exp-usecase-mod2-cxfws-soap</artifactId>
+  <artifactId>fuse-exp-karaf-soap</artifactId>
   <version>1.0.0</version>
   <packaging>bundle</packaging>
   <name>Camel Spring Quickstart</name>
