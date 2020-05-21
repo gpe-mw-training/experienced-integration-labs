@@ -111,6 +111,11 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-http4</artifactId>
         </dependency>
+		<!-- Java Architecture for XML Binding (JAXB), Java 11+ support -->		
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+		</dependency>
 
 
 	<!-- https://mvnrepository.com/artifact/org.apache.cxf/cxf-rt-transports-http-undertow -->
